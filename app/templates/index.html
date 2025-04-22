@@ -1,0 +1,192 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Prediction Model</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .prediction-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+        .radio-label {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Revenue Prediction Model</h1>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Enter Prediction Inputs</h5>
+            </div>
+            <div class="card-body">
+                <form id="prediction-form">
+                    <div class="row">
+                        <!-- Category -->
+                        <div class="col-md-6 mb-3">
+                            <label for="ProductCategory" class="form-label">Product Category</label>
+                            <select class="form-select" id="ProductCategory" name="ProductCategory" required>
+                                <option value="">Select a category</option>
+                                <option value="Seasonal">Seasonal</option>
+                                <option value="Home Decor">Home Decor</option>
+                                <option value="Kitchenware">Kitchenware</option>
+                                <option value="Stationery">Stationery</option>
+                                <option value="Gift Items">Gift Items</option>
+                                <option value="Lighting">Lighting</option>
+                                <option value="Storage">Storage</option>
+                                <option value="Bags">Bags</option>
+                                <option value="Toys & Games">Toys & Games</option>
+                                <option value="Fashion Accessories">Fashion Accessories</option>
+                                <option value="Garden & Outdoor">Garden & Outdoor</option>
+                                <option value="Party Supplies">Party Supplies</option>
+                                <option value="Personal Care">Personal Care</option>
+                                <option value="Pet Supplies">Pet Supplies</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Tech Accessories">Tech Accessories</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Time features -->
+                        <div class="col-md-2 mb-3">
+                            <label for="Year" class="form-label">Year</label>
+                            <input type="number" class="form-control" id="Year" name="Year" min="2000" max="2030" value="2025" required>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <label for="Month" class="form-label">Month</label>
+                            <input type="number" class="form-control" id="Month" name="Month" min="1" max="12" value="1" required>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <label for="WeekOfYear" class="form-label">Week of Year</label>
+                            <input type="number" class="form-control" id="WeekOfYear" name="WeekOfYear" min="1" max="53" value="1" required>
+                        </div>
+                        
+                        <!-- Season radio buttons (mutual exclusive) -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Season</label>
+                            <div class="d-flex flex-wrap">
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input" type="radio" id="season-summer" name="season" value="summer" checked>
+                                    <label class="form-check-label radio-label" for="season-summer">Summer</label>
+                                </div>
+                                
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input" type="radio" id="season-spring" name="season" value="spring">
+                                    <label class="form-check-label radio-label" for="season-spring">Spring</label>
+                                </div>
+                                
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input" type="radio" id="season-fall" name="season" value="fall">
+                                    <label class="form-check-label radio-label" for="season-fall">Fall</label>
+                                </div>
+                                
+                                <div class="form-check me-4 mb-2">
+                                    <input class="form-check-input" type="radio" id="season-holiday" name="season" value="holiday">
+                                    <label class="form-check-label radio-label" for="season-holiday">Holiday Season</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Historical patterns -->
+                        <div class="col-md-4 mb-3">
+                            <label for="Prev_Week_Revenue" class="form-label">Previous Week Revenue</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="Prev_Week_Revenue" name="Prev_Week_Revenue" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="Prev_2_Week_Revenue" class="form-label">Previous 2 Week Revenue</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="Prev_2_Week_Revenue" name="Prev_2_Week_Revenue" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="Prev_3_Week_Revenue" class="form-label">Previous 3 Week Revenue</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="Prev_3_Week_Revenue" name="Prev_3_Week_Revenue" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Get Prediction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="prediction-result" class="prediction-container">
+            <h3 class="mb-3">Prediction Results</h3>
+            <div class="alert alert-success">
+                <h4>Predicted Revenue: $<span id="prediction-value">0</span></h4>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Input Features</h5>
+                </div>
+                <div class="card-body">
+                    <pre id="input-features" style="white-space: pre-wrap;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('prediction-value').textContent = data.prediction.toFixed(2);
+                    document.getElementById('input-features').textContent = JSON.stringify(data.inputs, null, 2);
+                    document.getElementById('prediction-result').style.display = 'block';
+                    // Scroll to results
+                    document.getElementById('prediction-result').scrollIntoView({behavior: 'smooth'});
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during prediction. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>
